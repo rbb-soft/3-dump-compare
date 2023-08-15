@@ -115,16 +115,23 @@ offset = ""
 offset_label = tk.Label(frame, text=offset)
 offset_label.pack(side=tk.LEFT, padx=5)
 
+# Etiquetas "start" y "end"
+start_label = tk.Label(frame, text="Start:")
+start_label.pack(side=tk.LEFT, padx=5)
+start_entry = tk.Entry(frame)
+start_entry.pack(side=tk.LEFT, padx=5)
+
+end_label = tk.Label(frame, text="End:")
+end_label.pack(side=tk.LEFT, padx=5)
+end_entry = tk.Entry(frame)
+end_entry.pack(side=tk.LEFT, padx=5)
+
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
 
 hex_view.tag_configure("different", background="yellow")
 
-
-
 hex_view.bind("<Key>", disable_editing)
-
-# Vincular el evento <Motion> al widget hex_view
 hex_view.bind("<Motion>", show_offset)
 
 root.mainloop()
