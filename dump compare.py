@@ -2,6 +2,16 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 
+def format_to_hexadecimal(event):
+    value = event.widget.get()
+
+    try:
+        decimal_value = int(value, 16)
+        formatted_hex = f"0x{decimal_value:08X}"
+        event.widget.delete(0, tk.END)
+        event.widget.insert(0, formatted_hex)
+    except ValueError:
+        tk.messagebox.showerror("Error", "Valor no válido")
 
 def on_closing():
     global root
@@ -24,8 +34,13 @@ def load_files():
     return file_contents
 
 def compare_files():
-    start_offset = int(start_entry.get(), 16)  # Obtiene el valor de "start" en formato hexadecimal
-    end_offset = min(int(end_entry.get(), 16), start_offset + 0x1000)  # Limita "end" a 4 KB
+    # Obtiene el valor de "start" en formato hexadecimal
+    start_offset = int(start_entry.get(), 16)
+    # Tamaño máximo del buffer en bytes (4 KB)
+    max_buffer_size_bytes = 4 * 1024
+    # Calcula el valor de end_offset sumando start_offset y el tamaño máximo del buffer
+    end_offset = start_offset + max_buffer_size_bytes
+    
     file_contents = load_files()
     
     if len(file_contents) < 3:
@@ -119,14 +134,16 @@ offset_label.pack(side=tk.LEFT, padx=5)
 start_label = tk.Label(frame, text="Start:")
 start_label.pack(side=tk.LEFT, padx=5)
 start_entry = tk.Entry(frame)
-start_entry.insert(0, "0")  # Valor por defecto para "start"
+start_entry.insert(0, "0x00000000")  # Valor por defecto para "start"
 start_entry.pack(side=tk.LEFT, padx=5)
+start_entry.bind("<FocusOut>", format_to_hexadecimal) 
 
 end_label = tk.Label(frame, text="End:")
 end_label.pack(side=tk.LEFT, padx=5)
 end_entry = tk.Entry(frame)
-end_entry.insert(0, "FFFF")  # Valor por defecto para "end"
+end_entry.insert(0, "0x00001000")  # Valor por defecto para "end"
 end_entry.pack(side=tk.LEFT, padx=5)
+end_entry.bind("<FocusOut>", format_to_hexadecimal) 
 
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
