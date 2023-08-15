@@ -26,7 +26,7 @@ def load_files():
 def compare_files():
     file_contents = load_files()
     if len(file_contents) < 3:
-        messagebox.showinfo("Error", "Necesitas cargar al menos tres archivos para comparar.")
+        messagebox.showerror("Error", "You need to load all three files to compare.")
         return
 
     file1_data = file_contents[0]
@@ -84,7 +84,6 @@ def show_offset(event):
     cursor_position = hex_view.index(tk.CURRENT)
     # Parsear la posición para obtener la línea y el carácter
     line, charColumn = cursor_position.split('.')
-    print(charColumn)
     if(int(charColumn) > 0 and int(charColumn) <= 46):
         byte_offset = (int(line) - 1) * 16 + int(charColumn) // 3
         offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
@@ -101,7 +100,7 @@ def show_offset(event):
 ancho = 1230
 alto = 600
 root = tk.Tk()
-root.title("Visor Hexadecimal de Diferencias")
+root.title("Three dump comparator")
 root.geometry(f"{ancho}x{alto}")
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
