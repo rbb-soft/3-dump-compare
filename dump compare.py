@@ -40,6 +40,8 @@ def compare_files():
     max_buffer_size_bytes = 4 * 1024
     # Calcula el valor de end_offset sumando start_offset y el tamaño máximo del buffer
     end_offset = start_offset + max_buffer_size_bytes
+
+    end_label.config(text=f"End: 0x{end_offset:08X}")
     
     file_contents = load_files()
     
@@ -102,15 +104,15 @@ def show_offset(event):
     cursor_position = hex_view.index(tk.CURRENT)
     # Parsear la posición para obtener la línea y el carácter
     line, charColumn = cursor_position.split('.')
-    if 0 < int(charColumn) <= 46:
+    if  int(charColumn) <= 46:
         byte_offset = (int(line) - 1) * 16 + int(charColumn) // 3
-        offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
+        offset_label.config(text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
     elif 52 < int(charColumn) < 100:
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 52) // 3
-        offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
+        offset_label.config(text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
     elif 105 < int(charColumn) < 153:
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 105) // 3
-        offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
+        offset_label.config(text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
 
 
 ancho = 1230
@@ -126,10 +128,6 @@ frame.pack(pady=10)
 load_button = tk.Button(frame, text="load dumps", command=compare_files)
 load_button.pack(side=tk.LEFT)
 
-offset = ""
-offset_label = tk.Label(frame, text=offset)
-offset_label.pack(side=tk.LEFT, padx=5)
-
 # Etiquetas "start" y "end"
 start_label = tk.Label(frame, text="Start:")
 start_label.pack(side=tk.LEFT, padx=5)
@@ -138,12 +136,12 @@ start_entry.insert(0, "0x00000000")  # Valor por defecto para "start"
 start_entry.pack(side=tk.LEFT, padx=5)
 start_entry.bind("<FocusOut>", format_to_hexadecimal) 
 
-end_label = tk.Label(frame, text="End:")
+end_value = "0x00001000"  # Valor por defecto para "end"
+end_label = tk.Label(frame, text=f"End: {end_value}")
 end_label.pack(side=tk.LEFT, padx=5)
-end_entry = tk.Entry(frame)
-end_entry.insert(0, "0x00001000")  # Valor por defecto para "end"
-end_entry.pack(side=tk.LEFT, padx=5)
-end_entry.bind("<FocusOut>", format_to_hexadecimal) 
+
+offset_label = tk.Label(frame, text="")
+offset_label.pack(side=tk.LEFT, padx=5)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
