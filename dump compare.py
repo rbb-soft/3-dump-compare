@@ -23,7 +23,7 @@ def load_files():
 def compare_files():
     file_contents = load_files()
     if len(file_contents) < 3:
-        messagebox.showinfo("Error", "Necesitas cargar al menos tres archivos para comparar.!")
+        messagebox.showinfo("Error", "Necesitas cargar al menos tres archivos para comparar.")
         return
 
     file1_data = file_contents[0]
@@ -75,7 +75,27 @@ def compare_files():
         hex_view.tag_add(
             "different", f"{line_number3+1}.{char_offset3+106}", f"{line_number3+1}.{char_offset3+108}")
 
-ancho = 1210
+def show_offset(event):
+    offset_label.config(text="Offset: --------")
+    # Obtener la posición del cursor dentro del widget hex_view
+    cursor_position = hex_view.index(tk.CURRENT)
+    # Parsear la posición para obtener la línea y el carácter
+    line, charColumn = cursor_position.split('.')
+    print(charColumn)
+    if(int(charColumn) > 0 and int(charColumn) <= 46):
+        byte_offset = (int(line) - 1) * 16 + int(charColumn) // 3
+        offset_label.config(text=f"Offset: 0x{byte_offset:06X}")
+    
+    if(int(charColumn) > 52 and int(charColumn) < 100 ):
+        byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 52) // 3
+        offset_label.config(text=f"Offset: 0x{byte_offset:06X}")
+    
+    if(int(charColumn) > 105 and int(charColumn) < 153 ):
+        byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 105) // 3
+        offset_label.config(text=f"Offset: 0x{byte_offset:06X}")
+
+
+ancho = 1230
 alto = 600
 root = tk.Tk()
 root.title("Visor Hexadecimal de Diferencias")
@@ -88,17 +108,16 @@ frame.pack(pady=10)
 load_button = tk.Button(frame, text="Cargar Archivos", command=compare_files)
 load_button.pack(side=tk.LEFT)
 
-label_offset = "Offset: "
-label = tk.Label(frame, text=label_offset)
-label.pack(side=tk.LEFT, padx=0)
-
 offset = "0x000"
-label = tk.Label(frame, text=offset)
-label.pack(side=tk.LEFT, padx=0)
+offset_label = tk.Label(frame, text=offset)
+offset_label.pack(side=tk.LEFT, padx=0)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
 
 hex_view.tag_configure("different", background="yellow")
+
+# Vincular el evento <Motion> al widget hex_view
+hex_view.bind("<Motion>", show_offset)
 
 root.mainloop()
