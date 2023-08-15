@@ -52,15 +52,15 @@ def compare_files():
                 differences2.append(i + j)
                 differences3.append(i + j)
 
-        line1 = " ".join(f"{byte:02X}" for byte in chunk1)
-        line2 = " ".join(f"{byte:02X}" for byte in chunk2)
-        line3 = " ".join(f"{byte:02X}" for byte in chunk3)
+        buffer1 = " ".join(f"{byte:02X}" for byte in chunk1)
+        buffer2 = " ".join(f"{byte:02X}" for byte in chunk2)
+        buffer3 = " ".join(f"{byte:02X}" for byte in chunk3)
 
-        line1 = line1.ljust(48)
-        line2 = line2.ljust(48)
-        line3 = line3.ljust(48)
+        buffer1 = buffer1.ljust(48)
+        buffer2 = buffer2.ljust(48)
+        buffer3 = buffer3.ljust(48)
 
-        hex_view.insert(tk.END, f"{line1}  |  {line2}  |  {line3}\n")
+        hex_view.insert(tk.END, f"{buffer1}  |  {buffer2}  |  {buffer3}\n")
 
     for diff1, diff2, diff3 in zip(differences1, differences2, differences3):
         line_number1 = diff1 // 16
@@ -84,15 +84,13 @@ def show_offset(event):
     cursor_position = hex_view.index(tk.CURRENT)
     # Parsear la posición para obtener la línea y el carácter
     line, charColumn = cursor_position.split('.')
-    if(int(charColumn) > 0 and int(charColumn) <= 46):
+    if 0 < int(charColumn) <= 46:
         byte_offset = (int(line) - 1) * 16 + int(charColumn) // 3
         offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
-    
-    if(int(charColumn) > 52 and int(charColumn) < 100 ):
+    elif 52 < int(charColumn) < 100:
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 52) // 3
         offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
-    
-    if(int(charColumn) > 105 and int(charColumn) < 153 ):
+    elif 105 < int(charColumn) < 153:
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 105) // 3
         offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
 
@@ -118,11 +116,13 @@ offset_label.pack(side=tk.LEFT, padx=5)
 start_label = tk.Label(frame, text="Start:")
 start_label.pack(side=tk.LEFT, padx=5)
 start_entry = tk.Entry(frame)
+start_entry.insert(0, "0")  # Valor por defecto para "start"
 start_entry.pack(side=tk.LEFT, padx=5)
 
 end_label = tk.Label(frame, text="End:")
 end_label.pack(side=tk.LEFT, padx=5)
 end_entry = tk.Entry(frame)
+end_entry.insert(0, "FF")  # Valor por defecto para "end"
 end_entry.pack(side=tk.LEFT, padx=5)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
