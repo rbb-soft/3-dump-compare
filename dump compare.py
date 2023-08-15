@@ -82,8 +82,19 @@ root.title("Visor Hexadecimal de Diferencias")
 root.geometry(f"{ancho}x{alto}")
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
-load_button = tk.Button(root, text="Cargar Archivos", command=compare_files)
-load_button.pack(pady=10)
+frame = tk.Frame(root)
+frame.pack(pady=10)
+
+load_button = tk.Button(frame, text="Cargar Archivos", command=compare_files)
+load_button.pack(side=tk.LEFT)
+
+label_offset = "Offset: "
+label = tk.Label(frame, text=label_offset)
+label.pack(side=tk.LEFT, padx=0)
+
+offset = "0x000"
+label = tk.Label(frame, text=offset)
+label.pack(side=tk.LEFT, padx=0)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
