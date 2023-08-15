@@ -1,18 +1,34 @@
 import tkinter as tk
 from tkinter import filedialog
-import binascii
+from tkinter import messagebox
 
-def load_file():
-    file_path = filedialog.askopenfilename()
-    if file_path:
+
+def on_closing():
+    global root
+    root.quit()
+
+def load_files():
+    root = tk.Tk()
+    root.withdraw()  # Oculta la ventana principal de tkinter
+
+    file_paths = filedialog.askopenfilenames()
+
+    file_contents = []
+    for file_path in file_paths:
         with open(file_path, 'rb') as file:
-            return file.read()
-    return None
+            file_contents.append(file.read())
+
+    return file_contents
 
 def compare_files():
-    file1_data = load_file()
-    file2_data = load_file()
-    file3_data = load_file()
+    file_contents = load_files()
+    if len(file_contents) < 3:
+        messagebox.showinfo("Error", "Necesitas cargar al menos tres archivos para comparar.!")
+        return
+
+    file1_data = file_contents[0]
+    file2_data = file_contents[1]
+    file3_data = file_contents[2]
 
     if file1_data is None or file2_data is None or file3_data is None:
         return
@@ -59,8 +75,12 @@ def compare_files():
         hex_view.tag_add(
             "different", f"{line_number3+1}.{char_offset3+106}", f"{line_number3+1}.{char_offset3+108}")
 
+ancho = 1210
+alto = 600
 root = tk.Tk()
 root.title("Visor Hexadecimal de Diferencias")
+root.geometry(f"{ancho}x{alto}")
+root.protocol("WM_DELETE_WINDOW", on_closing)
 
 load_button = tk.Button(root, text="Cargar Archivos", command=compare_files)
 load_button.pack(pady=10)
