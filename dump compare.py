@@ -117,6 +117,7 @@ def show_offset(event):
 
 ancho = 1230
 alto = 600
+
 root = tk.Tk()
 root.title("Three dump comparator")
 root.minsize(ancho, alto)
@@ -128,20 +129,16 @@ frame.pack(pady=10)
 load_button = tk.Button(frame, text="load dumps", command=compare_files)
 load_button.pack(side=tk.LEFT)
 
-# Etiquetas "start" y "end"
 start_label = tk.Label(frame, text="Start:")
 start_label.pack(side=tk.LEFT, padx=5)
 start_entry = tk.Entry(frame)
-start_entry.insert(0, "0x00000000")  # Valor por defecto para "start"
+start_entry.insert(0, "0x00000000")
 start_entry.pack(side=tk.LEFT, padx=5)
 start_entry.bind("<FocusOut>", format_to_hexadecimal) 
 
-end_value = "0x00001000"  # Valor por defecto para "end"
+end_value = "0x00001000"
 end_label = tk.Label(frame, text=f"End: {end_value}")
 end_label.pack(side=tk.LEFT, padx=5)
-
-offset_label = tk.Label(frame, text="")
-offset_label.pack(side=tk.LEFT, padx=5)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
@@ -150,5 +147,12 @@ hex_view.tag_configure("different", background="yellow")
 
 hex_view.bind("<Key>", disable_editing)
 hex_view.bind("<Motion>", show_offset)
+
+# Crear el frame en la parte inferior y agregar las etiquetas
+bottom_frame = tk.Frame(root)
+bottom_frame.pack(side=tk.BOTTOM, pady=10)
+
+offset_label = tk.Label(bottom_frame, text="")
+offset_label.pack(side=tk.LEFT, padx=5)
 
 root.mainloop()
