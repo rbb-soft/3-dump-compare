@@ -101,13 +101,13 @@ ancho = 1230
 alto = 600
 root = tk.Tk()
 root.title("Three dump comparator")
-root.geometry(f"{ancho}x{alto}")
+root.minsize(ancho, alto)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
-load_button = tk.Button(frame, text="Cargar Archivos", command=compare_files)
+load_button = tk.Button(frame, text="load dumps", command=compare_files)
 load_button.pack(side=tk.LEFT)
 
 offset = ""
