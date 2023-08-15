@@ -24,14 +24,17 @@ def load_files():
     return file_contents
 
 def compare_files():
+    start_offset = int(start_entry.get(), 16)  # Obtiene el valor de "start" en formato hexadecimal
+    end_offset = min(int(end_entry.get(), 16), start_offset + 0x1000)  # Limita "end" a 4 KB
     file_contents = load_files()
+    
     if len(file_contents) < 3:
         messagebox.showerror("Error", "You need to load all three files to compare.")
         return
 
-    file1_data = file_contents[0]
-    file2_data = file_contents[1]
-    file3_data = file_contents[2]
+    file1_data = file_contents[0][start_offset:end_offset]
+    file2_data = file_contents[1][start_offset:end_offset]
+    file3_data = file_contents[2][start_offset:end_offset]
 
     if file1_data is None or file2_data is None or file3_data is None:
         return
@@ -122,7 +125,7 @@ start_entry.pack(side=tk.LEFT, padx=5)
 end_label = tk.Label(frame, text="End:")
 end_label.pack(side=tk.LEFT, padx=5)
 end_entry = tk.Entry(frame)
-end_entry.insert(0, "FF")  # Valor por defecto para "end"
+end_entry.insert(0, "FFFF")  # Valor por defecto para "end"
 end_entry.pack(side=tk.LEFT, padx=5)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
