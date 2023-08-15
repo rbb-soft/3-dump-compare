@@ -7,6 +7,9 @@ def on_closing():
     global root
     root.quit()
 
+def disable_editing(event):
+    return "break"
+
 def load_files():
     root = tk.Tk()
     root.withdraw()  # Oculta la ventana principal de tkinter
@@ -76,7 +79,7 @@ def compare_files():
             "different", f"{line_number3+1}.{char_offset3+106}", f"{line_number3+1}.{char_offset3+108}")
 
 def show_offset(event):
-    offset_label.config(text="Offset: --------")
+    offset_label.config(text="Offset: ----------")
     # Obtener la posición del cursor dentro del widget hex_view
     cursor_position = hex_view.index(tk.CURRENT)
     # Parsear la posición para obtener la línea y el carácter
@@ -84,15 +87,15 @@ def show_offset(event):
     print(charColumn)
     if(int(charColumn) > 0 and int(charColumn) <= 46):
         byte_offset = (int(line) - 1) * 16 + int(charColumn) // 3
-        offset_label.config(text=f"Offset: 0x{byte_offset:06X}")
+        offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
     
     if(int(charColumn) > 52 and int(charColumn) < 100 ):
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 52) // 3
-        offset_label.config(text=f"Offset: 0x{byte_offset:06X}")
+        offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
     
     if(int(charColumn) > 105 and int(charColumn) < 153 ):
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 105) // 3
-        offset_label.config(text=f"Offset: 0x{byte_offset:06X}")
+        offset_label.config(text=f"Offset: 0x{byte_offset:08X}")
 
 
 ancho = 1230
@@ -108,14 +111,18 @@ frame.pack(pady=10)
 load_button = tk.Button(frame, text="Cargar Archivos", command=compare_files)
 load_button.pack(side=tk.LEFT)
 
-offset = "0x000"
+offset = ""
 offset_label = tk.Label(frame, text=offset)
-offset_label.pack(side=tk.LEFT, padx=0)
+offset_label.pack(side=tk.LEFT, padx=5)
 
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
 
 hex_view.tag_configure("different", background="yellow")
+
+
+
+hex_view.bind("<Key>", disable_editing)
 
 # Vincular el evento <Motion> al widget hex_view
 hex_view.bind("<Motion>", show_offset)
