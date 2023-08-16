@@ -119,10 +119,10 @@ ancho = 1230
 alto = 600
 
 root = tk.Tk()
-root.title("Three dump comparator")
+root.title("Three dump comparator by RBB Soft® (2003-2022)")
 root.minsize(ancho, alto)
 root.protocol("WM_DELETE_WINDOW", on_closing)
-
+root.resizable(width=False, height=True)
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -134,7 +134,8 @@ start_label.pack(side=tk.LEFT, padx=5)
 start_entry = tk.Entry(frame)
 start_entry.insert(0, "0x00000000")
 start_entry.pack(side=tk.LEFT, padx=5)
-start_entry.bind("<FocusOut>", format_to_hexadecimal) 
+start_entry.bind("<FocusOut>", format_to_hexadecimal)
+start_entry.bind("<Return>", format_to_hexadecimal)
 
 end_value = "0x00001000"
 end_label = tk.Label(frame, text=f"End: {end_value}")

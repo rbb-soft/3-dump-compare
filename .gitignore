@@ -1,1 +1,7 @@
 /venv
+/build
+icon.ico
+setup.py
+dist/
+dump compare.spec
+mi_script.spec
