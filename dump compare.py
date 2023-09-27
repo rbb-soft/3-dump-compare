@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from tkinter import messagebox
 
+
 def format_to_hexadecimal(event):
     value = event.widget.get()
 
@@ -13,25 +14,33 @@ def format_to_hexadecimal(event):
     except ValueError:
         tk.messagebox.showerror("Error", "Valor no válido")
 
+
 def on_closing():
     global root
     root.quit()
 
+
 def disable_editing(event):
     return "break"
+
 
 def load_files():
     root = tk.Tk()
     root.withdraw()  # Oculta la ventana principal de tkinter
 
     file_paths = filedialog.askopenfilenames()
-
+    files_names = []
     file_contents = []
     for file_path in file_paths:
+        files_names.append(file_path.split("/")[-1])
         with open(file_path, 'rb') as file:
             file_contents.append(file.read())
-
+    label1.config(text=files_names[0], bg="lightblue")
+    label2.config(text=files_names[1], bg="lightblue")
+    label3.config(text=files_names[2], bg="lightblue")
+    frame_filesnames.pack(fill=tk.X, padx=0, pady=10)
     return file_contents
+
 
 def compare_files():
     # Obtiene el valor de "start" en formato hexadecimal
@@ -42,11 +51,12 @@ def compare_files():
     end_offset = start_offset + max_buffer_size_bytes
 
     end_label.config(text=f"End: 0x{end_offset:08X}")
-    
+
     file_contents = load_files()
-    
+
     if len(file_contents) < 3:
-        messagebox.showerror("Error", "You need to load all three files to compare.")
+        messagebox.showerror(
+            "Error", "You need to load all three files to compare.")
         return
 
     file1_data = file_contents[0][start_offset:end_offset]
@@ -98,21 +108,25 @@ def compare_files():
         hex_view.tag_add(
             "different", f"{line_number3+1}.{char_offset3+106}", f"{line_number3+1}.{char_offset3+108}")
 
+
 def show_offset(event):
     offset_label.config(text="Offset: ----------")
     # Obtener la posición del cursor dentro del widget hex_view
     cursor_position = hex_view.index(tk.CURRENT)
     # Parsear la posición para obtener la línea y el carácter
     line, charColumn = cursor_position.split('.')
-    if  int(charColumn) <= 46:
+    if int(charColumn) <= 46:
         byte_offset = (int(line) - 1) * 16 + int(charColumn) // 3
-        offset_label.config(text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
+        offset_label.config(
+            text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
     elif 52 < int(charColumn) < 100:
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 52) // 3
-        offset_label.config(text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
+        offset_label.config(
+            text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
     elif 105 < int(charColumn) < 153:
         byte_offset = (int(line) - 1) * 16 + (int(charColumn) - 105) // 3
-        offset_label.config(text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
+        offset_label.config(
+            text=f"Offset: 0x{(byte_offset + int(start_entry.get(), 16)):08X}")
 
 
 ancho = 1230
@@ -123,6 +137,7 @@ root.title("Three dump comparator by RBB Soft® (2003-2022)")
 root.minsize(ancho, alto)
 root.protocol("WM_DELETE_WINDOW", on_closing)
 root.resizable(width=False, height=True)
+
 frame = tk.Frame(root)
 frame.pack(pady=10)
 
@@ -141,17 +156,34 @@ end_value = "0x00001000"
 end_label = tk.Label(frame, text=f"End: {end_value}")
 end_label.pack(side=tk.LEFT, padx=5)
 
+
+#####################################################################################################
+# Crear un Frame
+frame_filesnames = tk.Frame(root)
+# Rellenar el eje X y agregar espaciado
+# frame_filesnames.pack(fill=tk.X, padx=0, pady=10)
+
+# Crear tres Labels
+label1 = tk.Label(frame_filesnames, text="")
+label2 = tk.Label(frame_filesnames, text="")
+label3 = tk.Label(frame_filesnames, text="")
+
+# Ubicar los Labels en el Frame
+label1.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(25, 50))
+label2.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(35, 50))
+label3.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=(30, 20))
+#####################################################################################################
+
+
 hex_view = tk.Text(root, wrap=tk.NONE)
 hex_view.pack(fill=tk.BOTH, expand=True)
-
 hex_view.tag_configure("different", background="yellow")
-
 hex_view.bind("<Key>", disable_editing)
 hex_view.bind("<Motion>", show_offset)
 
 # Crear el frame en la parte inferior y agregar las etiquetas
 bottom_frame = tk.Frame(root)
-bottom_frame.pack(side=tk.BOTTOM, pady=10)
+bottom_frame.pack(side=tk.BOTTOM, pady=0)
 
 offset_label = tk.Label(bottom_frame, text="")
 offset_label.pack(side=tk.LEFT, padx=5)
