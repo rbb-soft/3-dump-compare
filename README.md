@@ -1,6 +1,6 @@
 # 3-dump-compare
 
-app checks in python to compare 3 files(dumps) at the same time with the possibility to choose the start offset.
+app made in python to compare 3 files(dumps) at the same time with the possibility to choose the start offset.
 
 can handle large files because it only uploads 4kb per file
 
